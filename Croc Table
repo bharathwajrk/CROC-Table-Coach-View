@@ -1,0 +1,369 @@
+Duplicate coach8550spirte.png from Coaches toolkit and rename it as sprite.png which is used for Error Message Image
+
+Layout Tab:
+1. Drag and drop a Custom HTML under Advance section, and selection Text under Implementation
+
+Custom HTML Code:
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="crocTable">
+</table>
+
+Behavior Tab:
+1. Under Inline CSS, paste the below code
+
+Inline CSS:
+.validationExcImg {
+    vertical-align: middle;
+    height: 20px;
+    width: 20px;
+    background: url(sprite.png) 0px -187px;
+    background-repeat: no-repeat;
+}
+
+Behavior Section:
+1. Under Load, paste the below code
+
+Load:
+var table = this.context.element.querySelector(".crocTable");
+var tHeader =  "<theader><tr><th width='10%' rowspan='2' class='leftHeading'>Estimated Gain </th><th colspan='2'>Planned</th><th colspan='2'>Current Forecasted</th><th colspan='2'>Availability</th></tr>";
+tHeader += "<tr><th class='lowerHead'>Gross</th><th class='lowerHead'>Equity</th><th class='lowerHead'>Gross</th><th class='lowerHead'>Equity</th><th class='lowerHead'>Gross</th><th class='lowerHead'>Equity</th></tr></theader>"; 
+var tBody = "<tbody>";
+
+//var data =  this.context.binding.get("value");
+var data = this.context.binding ? this.context.binding.get("value") : null;
+var instPlanGrossSum = 0; var instPlanEquitySum = 0; var instCurGrossSum = 0; var instCurEquitySum = 0; var instAvailGrossSum = 0; var instAvailEquitySum = 0;
+var annualPlanGrossSum = 0; var annualPlanEquitySum = 0; var annualCurGrossSum = 0; var annualCurEquitySum = 0; var annualAvailGrossSum = 0; var annualAvailEquitySum = 0;
+//var obj = data.get(0);
+//obj.plannedGross = 0.03;
+//data.put(0, obj);
+//console.log(data.get(0));
+if(data != null && data.items != null && data.items.length > 0)
+{
+    for(var i=0; i<data.items.length; i++)
+          {
+          if(i<=5){
+              var label = data.items[i].label;
+              var curGross = data.items[i].gross ? data.items[i].gross : 0.00;//current forecaste gross
+              var curEquity = data.items[i].equity ? data.items[i].equity : 0.00;//current forecaste equity
+              var planGross = data.items[i].grossPlanned ? data.items[i].grossPlanned : 0.00;
+              var planEquity = data.items[i].equityPlanned ? data.items[i].equityPlanned : 0.00;
+              var availGross = data.items[i].grossAvailability ? data.items[i].grossAvailability : 0.00;
+              var availEquity = data.items[i].equityAvailability ? data.items[i].equityAvailability : 0.00;
+              var readOnly = "readonly = 'readonly'";
+              var isRequired = data.items[i].required == true ? "" : readOnly;         
+              var spanStar = data.items[i].required == true ? "<span style='color:red;'>*</span>" : "";
+              if(i <= 2){
+                      var curGrossTyp = "instCurGross"; var curEquityTyp = "instCurEquity";
+                      var planGrossTyp = "instPlanGross"; var planEquityTyp = "instPlanEquity";
+                      var availGrossTyp = "instAvailGross"; var availEquityTyp = "instAvailEquity";
+                      }
+              else if(i > 2 && i<=5){
+                      var curGrossTyp = "annualCurGross"; var curEquityTyp = "annualCurEquity";
+                      var planGrossTyp = "annualPlanGross"; var planEquityTyp = "annualPlanEquity";
+                      var availGrossTyp = "annualAvailGross"; var availEquityTyp = "annualAvailEquity";
+                      }
+              var line1 = "<td style = 'text-align: center;' width='10%'>"+label+spanStar+"</td>";
+              var line2 = "<td width='14%' roworder="+i+" valtype='"+planGrossTyp+"'><input roworder="+i+" valtype='"+planGrossTyp+"' style='width:95%' type='number' step='0.01' value = '"+planGross+"'/><img class='validationExcImg' style='display:none;'></td>";
+              var line3 = "<td width='14%'><input roworder="+i+" valtype='"+planEquityTyp+"' "+readOnly+" style='width:95%' type='number' step='0.01' value = '"+planEquity+"'/></td>";
+              var line4 = "<td width='14%' roworder="+i+" valtype='"+curGrossTyp+"'><input roworder="+i+" valtype='"+curGrossTyp+"' style='width:95%' type='number' step='0.01' value = '"+curGross+"'/><img class='validationExcImg' style='display:none;'></td>";
+              var line5 = "<td width='14%'><input roworder="+i+" valtype='"+curEquityTyp+"' "+readOnly+" style='width:95%' type='number' step='0.01' value = '"+curEquity+"'/></td>";
+              var line6 = "<td width='14%' roworder="+i+" valtype='"+availGrossTyp+"'><input roworder="+i+" valtype='"+availGrossTyp+"' style='width:95%' type='number' step='0.01' value = '"+availGross+"'/><img class='validationExcImg' style='display:none;'></td>";
+              var line7 = "<td width='14%'><input roworder="+i+" valtype='"+availEquityTyp+"' "+readOnly+" style='width:95%' type='number' step='0.01' value = '"+availEquity+"'/></td>";
+    
+              
+              tBody += "<tr>"+line1+line2+line3+line4+line5+line6+line7+"</tr>";          
+              if(i<=2){
+                  instPlanGrossSum += planGross;
+                  instPlanEquitySum +=  planEquity;
+                  instCurGrossSum += curGross;
+                  instCurEquitySum += curEquity;
+                  instAvailGrossSum += availGross;
+                  instAvailEquitySum += availEquity;
+                  }
+              else if(i>2 && i<=5){
+                  annualPlanGrossSum += planGross;
+                  annualPlanEquitySum +=  planEquity;
+                  annualCurGrossSum += curGross;
+                  annualCurEquitySum += curEquity;
+                  annualAvailGrossSum += availGross;
+                  annualAvailEquitySum += availEquity;
+                  }
+              }
+          else{
+              var readOnly = "readonly = 'readonly'";
+              var label = data.items[i].label;
+              if(i == 6){                  
+                  var line1 = "<td style = 'text-align: center;' width='10%'>"+label+"</td>";
+                  var line2 = "<td width='14%'><input roworder="+i+" valtype='instPlanGrossSum' "+readOnly+" style='width:95%' type='number' step='0.01' value = '"+instPlanGrossSum+"'/></td>";
+                  var line3 = "<td width='14%'><input roworder="+i+" valtype='instPlanEquitySum' "+readOnly+" style='width:95%' type='number' step='0.01' value = '"+instPlanEquitySum+"'/></td>";
+                  var line4 = "<td width='14%'><input roworder="+i+" valtype='instCurGrossSum' "+readOnly+" style='width:95%' type='number' step='0.01' value = '"+instCurGrossSum+"'/></td>";
+                  var line5 = "<td width='14%'><input roworder="+i+" valtype='instCurEquitySum' "+readOnly+" style='width:95%' type='number' step='0.01' value = '"+instCurEquitySum+"'/></td>";
+                  var line6 = "<td width='14%'><input roworder="+i+" valtype='instAvailGrossSum' "+readOnly+" style='width:95%' type='number' step='0.01' value = '"+instAvailGrossSum+"'/></td>";
+                  var line7 = "<td width='14%'><input roworder="+i+" valtype='instAvailEquitySum' "+readOnly+" style='width:95%' type='number' step='0.01' value = '"+instAvailEquitySum+"'/></td>";
+                  }
+              else{
+                  var line1 = "<td style = 'text-align: center;' width='10%'>"+label+"</td>";
+                  var line2 = "<td width='14%'><input roworder="+i+" valtype='annualPlanGrossSum' "+readOnly+" style='width:95%' type='number' step='0.01' value = '"+annualPlanGrossSum+"'/></td>";
+                  var line3 = "<td width='14%'><input roworder="+i+" valtype='annualPlanEquitySum' "+readOnly+" style='width:95%' type='number' step='0.01' value = '"+annualPlanEquitySum+"'/></td>";
+                  var line4 = "<td width='14%'><input roworder="+i+" valtype='annualCurGrossSum' "+readOnly+" style='width:95%' type='number' step='0.01' value = '"+annualCurGrossSum+"'/></td>";
+                  var line5 = "<td width='14%'><input roworder="+i+" valtype='annualCurEquitySum' "+readOnly+" style='width:95%' type='number' step='0.01' value = '"+annualCurEquitySum+"'/></td>";
+                  var line6 = "<td width='14%'><input roworder="+i+" valtype='annualAvailGrossSum' "+readOnly+" style='width:95%' type='number' step='0.01' value = '"+annualAvailGrossSum+"'/></td>";
+                  var line7 = "<td width='14%'><input roworder="+i+" valtype='annualAvailEquitySum' "+readOnly+" style='width:95%' type='number' step='0.01' value = '"+annualAvailEquitySum+"'/></td>";
+                  }
+              tBody += "<tr>"+line1+line2+line3+line4+line5+line6+line7+"</tr>"; 
+              }           
+          }
+}
+//Total Sum Calc
+//var sum1 = "<td style = 'text-align: center;' rowspan='2' width='45%'><b>Total Sum</b></td>";
+//var sum2 = "<td width='14%'><input valtype='planGrossSum' readonly = 'readonly' style='width:95%' type='number' step='0.01' value = '"+planGrossSum+"'/></td>";
+//var sum3 = "<td width='14%'><input valtype='planEquitySum' readonly = 'readonly' style='width:95%' type='number' step='0.01' value = '"+planEquitySum+"'/></td>";
+//var sum4 = "<td width='14%'><input valtype='curGrossSum' readonly = 'readonly' style='width:95%' type='number' step='0.01' value = '"+curGrossSum+"'/></td>";
+//var sum5 = "<td width='14%'><input valtype='curEquitySum' readonly = 'readonly' style='width:95%' type='number' step='0.01' value = '"+curEquitySum+"'/></td>";
+//          
+//tBody += "<tr>"+sum1+sum2+sum3+sum4+sum5+"</tr>";
+
+table.innerHTML = tHeader + tBody;
+
+var context = this.context;
+
+//Add values for that whole column
+function addValues(inpTag,inpSumTag){
+var GrossTot = 0;
+//inpTag = 'input[valtype="planGross"]';
+//inpSumTag = 'input[valtype="planGrossSum"]';
+dojo.query(inpTag,table).forEach(function(evtTgt){
+    var inpValue = domAttr.get(evtTgt, "value");
+    GrossTot += Number(inpValue);
+    //console.log(planGrossTot)
+    dojo.query(inpSumTag,table).forEach(function(eventTgt){
+        domAttr.set(eventTgt, "value",GrossTot);
+        });
+    });
+return GrossTot;
+}
+
+//function to set the binding value
+function resetValues(rowOrderNumber,variableType,inputValue){
+var bindingData =  context.binding.get("value");
+var obj = bindingData.get(rowOrderNumber);
+    if(variableType == "instPlanGross"){
+        obj.grossPlanned = inputValue;
+        var newValue = addValues('input[valtype="instPlanGross"]','input[valtype="instPlanGrossSum"]');
+        var newVal = bindingData.get(6);
+        newVal.grossPlanned = Number(newValue);
+        bindingData.put(6, newVal);
+        }
+    else if(variableType == "annualPlanGross"){
+        obj.grossPlanned = inputValue;
+        var newValue = addValues('input[valtype="annualPlanGross"]','input[valtype="annualPlanGrossSum"]');
+        var newVal = bindingData.get(7);
+        newVal.grossPlanned = Number(newValue);
+        bindingData.put(7, newVal);
+        }
+    else if(variableType == "instPlanEquity"){
+        obj.equityPlanned = inputValue;
+        var newValue = addValues('input[valtype="instPlanEquity"]','input[valtype="instPlanEquitySum"]');
+        var newVal = bindingData.get(6);
+        newVal.equityPlanned = Number(newValue);
+        bindingData.put(6, newVal);
+        }
+    else if(variableType == "annualPlanEquity"){
+        obj.equityPlanned = inputValue;
+        var newValue = addValues('input[valtype="annualPlanEquity"]','input[valtype="annualPlanEquitySum"]');
+        var newVal = bindingData.get(7);
+        newVal.equityPlanned = Number(newValue);
+        bindingData.put(7, newVal);
+        }
+    else if(variableType == "instCurGross"){
+        obj.gross = inputValue;
+        var newValue = addValues('input[valtype="instCurGross"]','input[valtype="instCurGrossSum"]');
+        var newVal = bindingData.get(6);
+        newVal.gross = Number(newValue);
+        bindingData.put(6, newVal);
+        }
+    else if(variableType == "annualCurGross"){
+        obj.gross = inputValue;
+        var newValue = addValues('input[valtype="annualCurGross"]','input[valtype="annualCurGrossSum"]');
+        var newVal = bindingData.get(7);
+        newVal.gross = Number(newValue);
+        bindingData.put(7, newVal);
+        }
+    else if(variableType == "instCurEquity"){
+        obj.equity = inputValue;
+        var newValue = addValues('input[valtype="instCurEquity"]','input[valtype="instCurEquitySum"]');
+        var newVal = bindingData.get(6);
+        newVal.equity = Number(newValue);
+        bindingData.put(6, newVal);
+        }
+    else if(variableType == "annualCurEquity"){
+        obj.equity = inputValue;
+        var newValue = addValues('input[valtype="annualCurEquity"]','input[valtype="annualCurEquitySum"]');
+        var newVal = bindingData.get(7);
+        newVal.equity = Number(newValue);
+        bindingData.put(7, newVal);
+        }
+    else if(variableType == "instAvailGross"){
+        obj.grossAvailability = inputValue;
+        var newValue = addValues('input[valtype="instAvailGross"]','input[valtype="instAvailGrossSum"]');
+        var newVal = bindingData.get(6);
+        newVal.grossAvailability = Number(newValue);
+        bindingData.put(6, newVal);
+        }
+    else if(variableType == "annualAvailGross"){
+        obj.grossAvailability = inputValue;
+        var newValue = addValues('input[valtype="annualAvailGross"]','input[valtype="annualAvailGrossSum"]');
+        var newVal = bindingData.get(7);
+        newVal.grossAvailability = Number(newValue);
+        bindingData.put(7, newVal);
+        }
+    else if(variableType == "instAvailEquity"){
+        obj.equityAvailability = inputValue;
+        var newValue = addValues('input[valtype="instAvailEquity"]','input[valtype="instAvailEquitySum"]');
+        var newVal = bindingData.get(6);
+        newVal.equityAvailability = Number(newValue);
+        bindingData.put(6, newVal);
+        }
+    else if(variableType == "annualAvailEquity"){
+        obj.equityAvailability = inputValue;
+        var newValue = addValues('input[valtype="annualAvailEquity"]','input[valtype="annualAvailEquitySum"]');
+        var newVal = bindingData.get(7);
+        newVal.equityAvailability = Number(newValue);
+        bindingData.put(7, newVal);
+        }    
+    bindingData.put(rowOrderNumber, obj);
+    //console.log(bindingData.get(rowOrderNumber))
+}
+//Type only Numbers or Arrow keys or Backspace and .
+function isNumeric(keyCodeVal){
+    if((keyCodeVal >=96 && keyCodeVal <= 105) || (keyCodeVal >=48 && keyCodeVal <= 57) || (keyCodeVal >=37 && keyCodeVal <= 40) || keyCodeVal == 110 || keyCodeVal == 190 || keyCodeVal == 8){
+    return true;
+    }
+    else {
+    return false;
+    }
+}
+//On click
+dojo.query("input",table).on("click",function(evt){
+var rowOrderNumber = domAttr.get(evt.target, "roworder");
+//console.log(rowOrderNumber)
+var variableType = domAttr.get(evt.target, "valtype");
+var inputValue = domAttr.get(evt.target, "value");
+resetValues(rowOrderNumber,variableType,inputValue);
+});
+
+//On KeyUP
+dojo.query("input",table).on("keyup",function(evt){
+//console.log(evt.which+"----"+evt.keyCode);
+var isNumber = isNumeric(evt.which);
+//console.log(isNumber)
+    if (!isNumber)
+    {
+        evt.preventDefault();
+    }
+    else{
+        var rowOrderNumber = domAttr.get(evt.target, "roworder");
+        //console.log(rowOrderNumber+"keyup")
+        var variableType = domAttr.get(evt.target, "valtype");
+        var inputValue = domAttr.get(evt.target, "value");
+        resetValues(rowOrderNumber,variableType,inputValue);
+    }
+});
+
+//On Key Down
+dojo.query("input",table).on("keydown",function(evt){
+var isNumber = isNumeric(evt.which);
+    if (!isNumber)
+    {
+        evt.preventDefault();
+    }
+    else{
+        var rowOrderNumber = domAttr.get(evt.target, "roworder");
+        //console.log(rowOrderNumber)
+        var variableType = domAttr.get(evt.target, "valtype");
+        var inputValue = domAttr.get(evt.target, "value");
+        resetValues(rowOrderNumber,variableType,inputValue);
+    }
+});
+
+//On KeyPress
+dojo.query("input",table).on("keypress",function(evt){
+//console.log(evt.which+"----"+evt.keyCode);
+var isNumber = isNumeric(evt.which);
+//console.log(isNumber+"---"+evt.which)
+//evt.which == 46 means .
+    if (!isNumber && evt.which != 46)
+    {
+        evt.preventDefault();
+    }    
+    else{
+        var rowOrderNumber = domAttr.get(evt.target, "roworder");
+        //console.log(rowOrderNumber)
+        var variableType = domAttr.get(evt.target, "valtype");
+        var inputValue = domAttr.get(evt.target, "value");
+        resetValues(rowOrderNumber,variableType,inputValue);
+    }
+});
+
+2. Under Validate, paste the below code
+
+Validate:
+var table = this.context.element.querySelector(".crocTable");
+this.validateStarted = true;
+
+dojo.query("td[roworder]",table).forEach(function(evtTgt1){
+         var inp = evtTgt1.children;              
+         inp[0].style.border = "";
+         inp[0].style.background = "";
+         inp[0].style.width = "95%";
+         inp[1].style.display = "none";
+});
+
+if (event.type == "error") {
+
+	var errorIndexes = [];
+	for (var i=0; i<event.errors.length; i++) {
+		var binding = event.errors[i].binding;
+		if (binding != undefined && binding.length > 1
+			&& binding.charAt(0) == "[" && binding.indexOf("]") >= 0) {
+			var errorIndex = Number(binding.substring(1, binding.indexOf("]")));
+			var bindType = binding.split(".");
+			var valType = "";
+			if(errorIndex <= 2 && bindType[1]=="gross"){
+			    valType = "instCurGross";
+			}
+			else if(errorIndex <= 2 && bindType[1]=="grossPlanned"){
+			    valType = "instPlanGross";
+			}
+			else if(errorIndex <= 2 && bindType[1]=="grossAvailability"){
+			    valType = "instAvailGross";
+			}
+			else if((errorIndex > 2 && errorIndex <= 5) && bindType[1]=="gross"){
+			    valType = "annualCurGross";
+			}
+			else if((errorIndex > 2 && errorIndex <= 5) && bindType[1]=="grossPlanned"){
+			    valType = "annualPlanGross";
+			}
+			else if((errorIndex > 2 && errorIndex <= 5) && bindType[1]=="grossAvailability"){
+			    valType = "annualAvailGross";
+			}
+            var attr = 'td[roworder="'+errorIndex+'"][valtype="'+valType+'"]';
+
+            dojo.query(attr,table).forEach(function(evtTgt){
+                var inp = evtTgt.children;          
+                inp[0].style.border = "1px solid red";
+                inp[0].style.background = "#ffd9d1";
+                inp[0].style.width = "85%";
+                inp[1].style.display = "inline";
+                //Tooltip.show([evtTgt],event.errors[i].message,["above", "below", "before", "after"]);
+
+                this.showTooltip = new Tooltip({
+				                    connectId: [inp[1]],
+				                    label: event.errors[i].message,
+				                    position: ["above", "below", "before", "after"]
+				                    });			
+                });
+		}
+	}
+}
+
+
